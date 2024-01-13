@@ -1,0 +1,28 @@
+{
+  "name": "video-splitter",
+  "version": "0.1.0",
+  "description": "A command line tool for cutting videos into segments of a specified duration.",
+  "bin": {
+    "v-split": "./dist/index.js",
+    "v-splitter": "./dist/index.js",
+    "video-splitter": "./dist/index.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsc -w",
+    "ci": "pnpm run build"
+  },
+  "keywords": [],
+  "author": "John Dibashi",
+  "license": "MIT",
+  "dependencies": {
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "i": "^0.3.7",
+    "npm": "^10.2.5"
+  }
+}
