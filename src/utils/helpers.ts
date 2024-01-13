@@ -38,12 +38,25 @@ export const showMessage = async (
     return console.log(_chalk.bold.red(`\nERROR: ${message}`));
 };
 
+/**
+ * Checks if the given file path corresponds to a video file based on its extension.
+ *
+ * @param filePath - The path to the file.
+ * @returns - A boolean indicating whether the file is a video file.
+ */
 export const isVideoFile = (filePath: string): boolean => {
-  const videoExtensions = [".mp4", ".avi", ".mkv"]; // Add more extensions if needed
+  const videoExtensions = [".mp4", ".avi", ".mkv"];
   const ext = path.extname(filePath).toLowerCase();
   return videoExtensions.includes(ext);
 };
 
+/**
+ * Generates the output file name for a trimmed video segment based on the input video path and trim count.
+ *
+ * @param videoPath - The path to the input video.
+ * @param trimCount - The index of the trim segment.
+ * @returns - The generated output file name.
+ */
 export const genOutputFileName = (
   videoPath: string,
   trimCount: number,
