@@ -15,6 +15,7 @@
     "dev": "tsc -w",
     "ci": "pnpm run build",
     "build": "tsc",
+    "lint": "tsc",
     "release": "pnpm run ci && changeset publish"
   },
   "repository": {
