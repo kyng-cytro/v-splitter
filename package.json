@@ -1,19 +1,35 @@
 {
   "name": "video-splitter",
   "version": "0.1.0",
+  "preferGlobal": true,
   "description": "A command line tool for cutting videos into segments of a specified duration.",
+  "homepage": "https://github.com/kyng-cytro/v-splitter#readme",
   "bin": {
-    "v-split": "./dist/index.js",
-    "v-splitter": "./dist/index.js",
-    "video-splitter": "./dist/index.js"
+    "v-split": "./bin/index.js",
+    "v-splitter": "./bin/index.js",
+    "video-splitter": "./bin/index.js"
   },
-  "type": "commonjs",
   "scripts": {
     "dev": "tsc -w",
-    "ci": "pnpm run build"
+    "lint": "tsc"
   },
-  "keywords": [],
-  "author": "John Dibashi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyng-cytro/v-splitter"
+  },
+  "type": "commonjs",
+  "author": {
+    "name": "John Dibashi",
+    "email": "johndibashi2001@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/kyng-cytro/v-splitter"
+  },
+  "keywords": [
+    "commander",
+    "cli-tool",
+    "ffmpeg"
+  ],
   "license": "MIT",
   "dependencies": {
     "@types/fluent-ffmpeg": "^2.1.24",

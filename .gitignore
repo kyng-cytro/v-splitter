@@ -1,4 +1,3 @@
-node_modules
-dist
-media
-split-output
+/node_modules
+/dist
+/split-output
