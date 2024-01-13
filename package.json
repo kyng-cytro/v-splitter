@@ -35,6 +35,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@changesets/cli": "^2.27.1",
     "@types/fluent-ffmpeg": "^2.1.24",
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
