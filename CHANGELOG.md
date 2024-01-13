@@ -1,5 +1,11 @@
 # video-splitter
 
+## 1.0.0
+
+### Major Changes
+
+- 4ce691d: slam dunk
+
 ## 0.1.2
 
 ### Patch Changes
