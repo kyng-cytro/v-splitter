@@ -1,7 +1,7 @@
 {
   "name": "video-splitter",
   "type": "commonjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./bin/index.js",
   "preferGlobal": true,
   "description": "A command line tool for cutting videos into segments of a specified duration.",
