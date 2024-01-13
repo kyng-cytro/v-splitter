@@ -3,7 +3,6 @@ import path from "path";
 // Dynamic import for chalk
 const chalk = import("chalk").then((m) => m.default);
 
-// TODO: fix header color
 export const header = `
   ██╗   ██╗██╗██████╗ ███████╗ ██████╗     ███████╗██████╗ ██╗     ██╗████████╗████████╗███████╗██████╗ 
   ██║   ██║██║██╔══██╗██╔════╝██╔═══██╗    ██╔════╝██╔══██╗██║     ██║╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
@@ -22,7 +21,7 @@ export const header = `
  */
 export const showMessage = async (
   message: string,
-  type: "success" | "info" | "warn" | "error",
+  type: "success" | "info" | "warn" | "error"
 ) => {
   const _chalk = await chalk;
   if (type === "success")
@@ -59,7 +58,7 @@ export const isVideoFile = (filePath: string): boolean => {
  */
 export const genOutputFileName = (
   videoPath: string,
-  trimCount: number,
+  trimCount: number
 ): string => {
   const fileName = path.parse(videoPath).name;
   const fileExt = path.extname(videoPath);

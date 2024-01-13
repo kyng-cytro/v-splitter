@@ -21,7 +21,7 @@ export const run = async (
   videoPath: string,
   outputPath: string,
   trimDuration: number,
-  useFolder = true,
+  useFolder = true
 ) => {
   try {
     // Get the duration of the input video
@@ -32,7 +32,7 @@ export const run = async (
 
     await showMessage(
       `Splitting video into ${trims.length} pieces of ${trimDuration} seconds videos.`,
-      "info",
+      "info"
     );
 
     // Create promises for each trim operation
@@ -43,8 +43,8 @@ export const run = async (
         videoPath,
         outputPath,
         trimDuration,
-        useFolder,
-      ),
+        useFolder
+      )
     );
 
     // Wait for all trim promises to complete
@@ -56,6 +56,8 @@ export const run = async (
     process.exit(1);
   }
 };
+
+// TODO: fix cpu usage
 
 /**
  * Trims a segment from a video based on the specified parameters and saves the trimmed segment.
@@ -74,7 +76,7 @@ const trimVideoSegment = (
   videoPath: string,
   outputPath: string,
   trimDuration = 30,
-  useFolder = true,
+  useFolder = true
 ) => {
   // Create folder if needed
   if (!fs.existsSync(path.join(outputPath, "split-output")) && useFolder) {
@@ -82,12 +84,11 @@ const trimVideoSegment = (
   }
 
   // Create file path
-  // TODO: use file name and extention
   const outPath = useFolder
     ? path.join(
         outputPath,
         "split-output",
-        genOutputFileName(videoPath, trimCount),
+        genOutputFileName(videoPath, trimCount)
       )
     : path.join(outputPath, genOutputFileName(videoPath, trimCount));
 
@@ -102,7 +103,7 @@ const trimVideoSegment = (
       .on("error", async function (err) {
         await showMessage(
           `An error occured on trim ${trimCount}.\nmessage: ${err.message}.`,
-          "warn",
+          "warn"
         );
         reject(new Error(err.message));
       })
