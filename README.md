@@ -1,4 +1,4 @@
-# Video Splitter Tool
+# Video Splitter
 
 A command line tool for cutting videos into segments of a specified duration, ideal for WhatsApp statuses.
 
