@@ -24,27 +24,13 @@ A command line tool for cutting videos into segments of a specified duration, id
 ## Requirements
 
 - Node.js (version 18.18.0 or higher)
-- pnpm (version 8.14.0 or higher)
+- npm (version 9.8.1 or higher)
 
 ## Installation
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/cytro/video-splitter.git
-   ```
-
-2. Navigate to the project folder:
-
-   ```bash
-   cd video-splitter
-   ```
-
-3. Install dependencies:
-
-   ```bash
-     pnpm install
-   ```
+```bash
+  npm install -g video-splitter
+```
 
 ## Usage
 
