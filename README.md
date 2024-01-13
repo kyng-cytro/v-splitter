@@ -17,13 +17,14 @@ A command line tool for cutting videos into segments of a specified duration, id
 
 - Cut long videos into shorter segments.
 - Specify the preferred duration for each segment.
+- Multiple aliases `v-split`, `v-splitter`, `video-splitter`.
 - Choose whether to output segments in a separate folder or directly in the output directory.
 - Ideal for creating videos suitable for WhatsApp statuses.
 
 ## Requirements
 
-- Node.js (version X.X.X or higher)
-- npm (version X.X.X or higher)
+- Node.js (version 18.18.0 or higher)
+- pnpm (version 8.14.0 or higher)
 
 ## Installation
 
@@ -42,7 +43,7 @@ A command line tool for cutting videos into segments of a specified duration, id
 3. Install dependencies:
 
    ```bash
-     npm install
+     pnpm install
    ```
 
 ## Usage
