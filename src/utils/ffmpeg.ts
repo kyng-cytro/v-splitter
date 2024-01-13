@@ -10,9 +10,12 @@ ffmpeg.setFfmpegPath(pathToFfmpeg!);
 ffmpeg.setFfprobePath(pathToFfprobe.path);
 
 /**
- * Trims a video into multiple pieces based on a specified duration.
+ * Splits a video into segments based on the specified duration and saves the trimmed segments.
  *
  * @param videoPath - The path to the input video.
+ * @param outputPath - The directory where the trimmed video segments will be saved.
+ * @param trimDuration - The duration (in seconds) of each trimmed video segment.
+ * @param useFolder - Indicates whether to use a separate folder for the trimmed segments (default is true).
  */
 export const run = async (
   videoPath: string,
@@ -55,14 +58,15 @@ export const run = async (
 };
 
 /**
- * Trims a specific segment of a video.
+ * Trims a segment from a video based on the specified parameters and saves the trimmed segment.
  *
- * @param trimCount - The index of the trim segment.
- * @param seekValue - The starting time to begin the trim.
+ * @param trimCount - The index of the trim operation.
+ * @param seekValue - The starting point (in seconds) from which to trim the video.
  * @param videoPath - The path to the input video.
- * @param outputPath - The path to put the output video.
- * @param preferredDuration - The preferred duration for each trimmed segment.
- * @returns - A promise that resolves when the trimming is completed.
+ * @param outputPath - The directory where the trimmed video segment will be saved.
+ * @param trimDuration - The duration (in seconds) of the trimmed video segment (default is 30 seconds).
+ * @param useFolder - Indicates whether to use a separate folder for the trimmed segment (default is true).
+ * @returns A promise that resolves with the path to the saved trimmed video segment.
  */
 const trimVideoSegment = (
   trimCount: number,
