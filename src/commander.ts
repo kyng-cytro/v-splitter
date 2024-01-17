@@ -15,6 +15,10 @@ program
     "preferred duration in seconds (default is 30)"
   )
   .option(
+    "-c, --concurrency [count]",
+    "concurrency count for trim operations (default is 5)"
+  )
+  .option(
     "-o, --output [path]",
     "output folder path (default is current working directory)"
   )
@@ -26,11 +30,13 @@ program
     async (opts: {
       video: string;
       duration: number;
+      concurrency: number;
       output: string;
       folder: boolean;
     }) => {
       const videoPath: string = opts.video || "";
       const preferredDuration: number = Number(opts.duration || 30);
+      const preferredConcurrency: number = Number(opts.concurrency || 5);
       const outputFolderPath: string = path.resolve(
         opts.output || process.cwd()
       );
@@ -54,6 +60,15 @@ program
         process.exit(1);
       }
 
+      // Check if concurrency is a positive number
+      if (isNaN(preferredConcurrency) || preferredConcurrency <= 0) {
+        await showMessage(
+          "Please provide a valid positive number for concurrency.",
+          "error"
+        );
+        process.exit(1);
+      }
+
       // Check if output folder exists
       if (
         !fs.existsSync(outputFolderPath) ||
@@ -69,6 +84,12 @@ program
       console.log("");
       console.log(header);
 
-      run(videoPath, outputFolderPath, preferredDuration, outputInFolder);
+      run({
+        videoPath: videoPath,
+        outputPath: outputFolderPath,
+        trimDuration: preferredDuration,
+        concurrency: preferredConcurrency,
+        useFolder: outputInFolder,
+      });
     }
   );

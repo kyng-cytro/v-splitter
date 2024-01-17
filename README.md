@@ -43,6 +43,7 @@ v-split -v /path/to/video.mp4 -d 45 -o /path/to/output --no-folder
 - `-v, --video <path>`: Path to the input video file.
 - `-d, --duration [seconds]`: Preferred duration for each trimmed segment in seconds (default is 30).
 - `-o, --output [path]`: Output folder path (default is current working directory).
+- `-c, --concurrency [count]`: Maximum number of concurrent trim operations.
 - `--no-folder`: Place output files directly in the output directory without creating a folder.
 
 ## Examples
@@ -53,10 +54,10 @@ v-split -v /path/to/video.mp4 -d 45 -o /path/to/output --no-folder
   v-split -v /path/to/video.mp4 -d 45 -o /path/to/output --no-folder
   ```
 
-- Trim a video into 30-second segments and organize them in a separate folder:
+- Trim a video into 30-second segments 5 at a time and organize them in a separate folder:
 
   ```bash
-  v-split -v /path/to/video.mp4 -d 30 -o /path/to/output
+  v-split -v /path/to/video.mp4 -d 30 -c 5 -o /path/to/output
   ```
 
 ## Contributing

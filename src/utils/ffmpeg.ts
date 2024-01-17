@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import ffmpeg from "fluent-ffmpeg";
+import { createSpinner } from "nanospinner";
 const pathToFfmpeg = require("ffmpeg-static");
 const pathToFfprobe = require("ffprobe-static");
 import { genOutputFileName, showMessage } from "./helpers";
@@ -9,20 +10,30 @@ import { genOutputFileName, showMessage } from "./helpers";
 ffmpeg.setFfmpegPath(pathToFfmpeg!);
 ffmpeg.setFfprobePath(pathToFfprobe.path);
 
+const spinner = createSpinner();
+
 /**
  * Splits a video into segments based on the specified duration and saves the trimmed segments.
  *
  * @param videoPath - The path to the input video.
- * @param outputPath - The directory where the trimmed video segments will be saved.
  * @param trimDuration - The duration (in seconds) of each trimmed video segment.
+ * @param concurrency - The concurrency count for trim operations.
+ * @param outputPath - The directory where the trimmed video segments will be saved.
  * @param useFolder - Indicates whether to use a separate folder for the trimmed segments (default is true).
  */
-export const run = async (
-  videoPath: string,
-  outputPath: string,
-  trimDuration: number,
-  useFolder = true
-) => {
+export const run = async ({
+  videoPath,
+  trimDuration,
+  concurrency,
+  outputPath,
+  useFolder = true,
+}: {
+  videoPath: string;
+  trimDuration: number;
+  concurrency: number;
+  outputPath: string;
+  useFolder: boolean;
+}) => {
   try {
     // Get the duration of the input video
     const { duration } = await getDuration(videoPath);
@@ -30,10 +41,14 @@ export const run = async (
     // Divide the duration into segments
     const trims = divideDuration(duration, trimDuration);
 
-    await showMessage(
-      `Splitting video into ${trims.length} pieces of ${trimDuration} seconds videos.`,
-      "info"
-    );
+    // If concurrency was more than count
+    if (concurrency > trims.length) {
+      concurrency = trims.length;
+    }
+
+    spinner.start({
+      text: `Splitting video into ${trims.length} pieces of ${trimDuration} seconds videos using concurrency of ${concurrency}.`,
+    });
 
     // Create promises for each trim operation
     const promises = trims.map((trim, i) =>
@@ -47,17 +62,48 @@ export const run = async (
       )
     );
 
-    // Wait for all trim promises to complete
-    await Promise.all(promises);
+    // Run promises with concurrency control
+    await runPromisesWithConcurrency(promises, concurrency);
 
-    await showMessage(`Split completed.`, "success");
+    spinner.stop({ text: "Split completed", mark: ":)", color: "green" });
   } catch (e: any) {
-    await showMessage(`Something went wrong. ${e.message}`, "error");
+    spinner.stop({
+      text: `Something went wrong. ${e.message}`,
+      color: "red",
+      mark: ":(",
+    });
     process.exit(1);
   }
 };
 
-// TODO: fix cpu usage
+/**
+ * Runs an array of promise factories with a specified concurrency limit.
+ *
+ * @param promises - An array of functions that return promises.
+ * @param concurrency - The maximum number of promises to execute concurrently.
+ * @returns A promise that resolves when all promises have completed.
+ */
+const runPromisesWithConcurrency = async (
+  promises: (() => Promise<void>)[],
+  concurrency: number
+) => {
+  const executing: Promise<void>[] = [];
+
+  for (const promiseFactory of promises) {
+    const promise = promiseFactory();
+    executing.push(promise);
+
+    promise.finally(() => {
+      executing.splice(executing.indexOf(promise), 1);
+    });
+
+    if (executing.length >= concurrency) {
+      await Promise.race(executing);
+    }
+  }
+
+  await Promise.all(executing);
+};
 
 /**
  * Trims a segment from a video based on the specified parameters and saves the trimmed segment.
@@ -78,37 +124,46 @@ const trimVideoSegment = (
   trimDuration = 30,
   useFolder = true
 ) => {
-  // Create folder if needed
-  if (!fs.existsSync(path.join(outputPath, "split-output")) && useFolder) {
-    fs.mkdirSync(path.join(outputPath, "split-output"), { recursive: true });
-  }
+  // Return a function that, when executed, performs the trimming operation
+  return async () => {
+    try {
+      // Create folder if needed
+      if (!fs.existsSync(path.join(outputPath, "split-output")) && useFolder) {
+        fs.mkdirSync(path.join(outputPath, "split-output"), {
+          recursive: true,
+        });
+      }
 
-  // Create file path
-  const outPath = useFolder
-    ? path.join(
-        outputPath,
-        "split-output",
-        genOutputFileName(videoPath, trimCount)
-      )
-    : path.join(outputPath, genOutputFileName(videoPath, trimCount));
+      // Create file path
+      const outPath = useFolder
+        ? path.join(
+            outputPath,
+            "split-output",
+            genOutputFileName(videoPath, trimCount)
+          )
+        : path.join(outputPath, genOutputFileName(videoPath, trimCount));
 
-  return new Promise((resolve, reject) => {
-    ffmpeg(videoPath)
-      .output(outPath)
-      .seekInput(seekValue)
-      .duration(trimDuration)
-      .on("end", () => {
-        resolve({ outPath });
-      })
-      .on("error", async function (err) {
-        await showMessage(
-          `An error occured on trim ${trimCount}.\nmessage: ${err.message}.`,
-          "warn"
-        );
-        reject(new Error(err.message));
-      })
-      .run();
-  });
+      await new Promise((resolve, reject) => {
+        ffmpeg(videoPath)
+          .output(outPath)
+          .seekInput(seekValue)
+          .duration(trimDuration)
+          .on("end", () => {
+            resolve({ outPath });
+          })
+          .on("error", async function (err) {
+            await showMessage(
+              `An error occurred on trim ${trimCount}.\nmessage: ${err.message}.`,
+              "warn"
+            );
+            reject(new Error(err.message));
+          })
+          .run();
+      });
+    } catch (error: any) {
+      throw new Error(`Error in trimVideoSegment: ${error.message}`);
+    }
+  };
 };
 
 /**
