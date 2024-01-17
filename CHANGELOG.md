@@ -1,5 +1,13 @@
 # video-splitter
 
+## 1.1.0
+
+### Minor Changes
+
+- b7b3ec9: - Added concurrency to reduce CPU load. Try -c.
+  - UI changes. Now using `nanospinner` for better feedback.
+  - Mild code clean up.
+
 ## 1.0.0
 
 ### Major Changes
